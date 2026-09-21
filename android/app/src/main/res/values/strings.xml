@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">SSP Properties &amp; Loans</string>
+    <string name="title_activity_main">SSP Properties &amp; Loans</string>
+    <string name="package_name">com.sspproperties.loans</string>
+    <string name="custom_url_scheme">com.sspproperties.loans</string>
+</resources>
