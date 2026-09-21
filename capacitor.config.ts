@@ -5,8 +5,8 @@ const config: CapacitorConfig = {
   appName: 'SSP Properties & Loans',
   webDir: 'public',
   server: {
-    // Connects native Android WebView to the running Next.js application on the public tunnel or local network
-    url: process.env.CAPACITOR_SERVER_URL || 'https://stack-harvest-alumni-tommy.trycloudflare.com',
+    // Connects native Android WebView to permanent Vercel production deployment
+    url: process.env.CAPACITOR_SERVER_URL || 'https://ssp-app-trinath-7s-projects.vercel.app',
     cleartext: true,
   },
   android: {
