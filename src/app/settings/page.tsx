@@ -6,7 +6,6 @@ import { useApp } from '@/context/AppContext';
 import { SSPLogo } from '@/components/common/SSPLogo';
 import {
   Settings,
-  Building,
   Shield,
   Bell,
   Database,
@@ -204,7 +203,7 @@ export default function SettingsPage() {
     try {
       const res = await fetch('/api/seed', { method: 'POST' });
       if (res.ok) {
-        showToast('Database reset to fresh sample records! 20 customers, 15 properties, 20 loans restored.');
+        showToast('Database reset to fresh sample records! Borrowers, vehicles, agents, and repo cases restored.');
         setShowResetConfirm(false);
         window.location.reload();
       }
@@ -214,14 +213,12 @@ export default function SettingsPage() {
   };
 
   const permissions = [
-    { module: 'Main Dashboard & KPI Charts', admin: true, manager: true, agent: true, staff: true },
-    { module: 'Customer Management (360° Profile)', admin: true, manager: true, agent: 'Assigned', staff: 'Read-only' },
-    { module: 'Property Listings & Title Deeds', admin: true, manager: true, agent: 'Assigned', staff: 'Read-only' },
-    { module: 'Loan Sanctioning & EMI Schedule', admin: true, manager: true, agent: 'View assigned', staff: false },
-    { module: 'Payment Collection & Receipts', admin: true, manager: true, agent: true, staff: true },
-    { module: 'Vehicle Repo & RTO Search', admin: true, manager: true, agent: 'Assigned cases', staff: false },
-    { module: 'Repo Workflow Status Transitions', admin: true, manager: true, agent: 'Field visits & Yard', staff: false },
-    { module: 'Document Upload & Downloads', admin: true, manager: true, agent: true, staff: true },
+    { module: 'Repo Command Dashboard & Analytics', admin: true, manager: true, agent: true, staff: true },
+    { module: 'Borrower Accounts & Verification (360° Profile)', admin: true, manager: true, agent: 'Assigned', staff: 'Read-only' },
+    { module: 'Vehicle Repo Fleet & Live Tracing', admin: true, manager: true, agent: 'Assigned cases', staff: false },
+    { module: 'Field Recovery Agent Operations & Tracking', admin: true, manager: true, agent: 'Self records', staff: 'Read-only' },
+    { module: 'Repo Workflow & Yard Custody Intake', admin: true, manager: true, agent: 'Field visits & Yard', staff: false },
+    { module: 'Seizure Memos & Yard Gate Pass Documents', admin: true, manager: true, agent: true, staff: true },
     { module: 'Executive Reports & Excel Export', admin: true, manager: true, agent: false, staff: false },
     { module: 'Business Settings & DB Backup', admin: true, manager: false, agent: false, staff: false },
   ];
@@ -508,15 +505,12 @@ export default function SettingsPage() {
         </div>
 
         {/* Database Metric Badges */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2.5 text-center">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
           {[
-            { label: 'Customers', count: dbStatus?.tableCounts?.customers ?? dbStatus?.localStats?.customers ?? 20 },
-            { label: 'Properties', count: dbStatus?.tableCounts?.properties ?? dbStatus?.localStats?.properties ?? 15 },
-            { label: 'Loans', count: dbStatus?.tableCounts?.loans ?? dbStatus?.localStats?.loans ?? 20 },
-            { label: 'Payments', count: dbStatus?.tableCounts?.payments ?? dbStatus?.localStats?.payments ?? 30 },
-            { label: 'Vehicles', count: dbStatus?.tableCounts?.vehicles ?? dbStatus?.localStats?.vehicles ?? 15 },
-            { label: 'Agents', count: dbStatus?.tableCounts?.agents ?? dbStatus?.localStats?.agents ?? 8 },
-            { label: 'Documents', count: dbStatus?.tableCounts?.documents ?? dbStatus?.localStats?.documents ?? 20 },
+            { label: 'Borrowers', count: dbStatus?.tableCounts?.customers ?? dbStatus?.localStats?.customers ?? 20 },
+            { label: 'Vehicles & Repo Cases', count: dbStatus?.tableCounts?.vehicles ?? dbStatus?.localStats?.vehicles ?? 15 },
+            { label: 'Recovery Agents', count: dbStatus?.tableCounts?.agents ?? dbStatus?.localStats?.agents ?? 8 },
+            { label: 'Seizure Documents', count: dbStatus?.tableCounts?.documents ?? dbStatus?.localStats?.documents ?? 20 },
           ].map((stat, i) => (
             <div key={i} className="p-3 bg-slate-50 border border-slate-100 rounded-2xl">
               <div className="text-base font-black text-slate-900">{stat.count}</div>
@@ -709,7 +703,7 @@ export default function SettingsPage() {
           <div>
             <span className="font-bold text-slate-900">Reset Built-in Local Engine Sample Data</span>
             <p className="text-slate-600 mt-0.5">
-              Restores 20 customers, 15 properties, 20 loans, 30 payment receipts, 15 vehicles, 8 agents, and 20 documents in <code>data/ssp_database.json</code>.
+              Restores 20 borrowers, 15 repo vehicles, 8 recovery agents, and 20 seizure documents in <code>data/ssp_database.json</code>.
             </p>
           </div>
           {showResetConfirm ? (

@@ -10,9 +10,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'SSP Properties & Loans | Premier Real Estate & Asset Financing',
+  title: 'SSP Repo Command Center | Vehicle Recovery Dashboard',
   description:
-    'Complete enterprise management platform combining Property Management, Loan Management, Customer Management, Vehicle & Repo Management, Payment Tracking, and Agent Operations.',
+    'Modern vehicle repossession and yard management dashboard for tracking vehicles, repo cases, status updates, and operational alerts.',
   icons: {
     icon: '/logo.svg',
   },

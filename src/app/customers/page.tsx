@@ -12,10 +12,7 @@ import {
   MessageCircle,
   Mail,
   MapPin,
-  Landmark,
-  Building,
   Truck,
-  CreditCard,
   FileText,
   Trash2,
   X,
@@ -107,10 +104,10 @@ export default function CustomersPage() {
         <div>
           <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2.5">
             <Users className="w-7 h-7 text-emerald-700" />
-            <span>Customer Directory & KYC</span>
+            <span>Borrower Directory & KYC</span>
           </h1>
           <p className="text-sm font-medium text-slate-500 mt-0.5">
-            Borrower portfolios, identity verification, linked assets, and direct communications ({customers.length} records)
+            Borrower portfolios, identity verification, linked vehicles & repo cases ({customers.length} records)
           </p>
         </div>
 
@@ -149,83 +146,90 @@ export default function CustomersPage() {
       {/* Customers Table */}
       <div className="bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead className="bg-slate-50 border-b border-slate-200 text-slate-400 uppercase font-bold text-[10px] tracking-wider">
-              <tr>
-                <th className="p-3.5">Customer</th>
-                <th className="p-3.5">Contact</th>
-                <th className="p-3.5">City & State</th>
-                <th className="p-3.5">PAN & KYC</th>
-                <th className="p-3.5">Occupation & Income</th>
-                <th className="p-3.5">Assigned Agent</th>
-                <th className="p-3.5 text-right">Actions</th>
+          <table className="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr className="border-b border-slate-200 bg-slate-50/75 text-slate-500 font-bold uppercase text-[10px] tracking-wider">
+                <th className="py-3 px-4">Borrower</th>
+                <th className="py-3 px-4">Contact</th>
+                <th className="py-3 px-4">Location</th>
+                <th className="py-3 px-4">PAN / KYC</th>
+                <th className="py-3 px-4">Occupation</th>
+                <th className="py-3 px-4 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {filteredCustomers.map((c) => (
-                <tr
-                  key={c.id}
-                  onClick={() => handleOpenCustomer(c.customerId)}
-                  className="hover:bg-emerald-50/40 transition-colors cursor-pointer"
-                >
-                  <td className="p-3.5">
-                    <div className="font-bold text-slate-900">{c.name}</div>
-                    <div className="text-[10px] font-mono text-emerald-800">{c.customerId}</div>
-                  </td>
-                  <td className="p-3.5 text-slate-700">
-                    <div className="font-semibold">{c.phone}</div>
-                    <div className="text-[10px] text-slate-400">{c.email}</div>
-                  </td>
-                  <td className="p-3.5 text-slate-600">
-                    <div>{c.city}</div>
-                    <div className="text-[10px] text-slate-400">{c.state}</div>
-                  </td>
-                  <td className="p-3.5">
-                    <div className="font-mono font-bold text-slate-800">{c.pan}</div>
-                    <span className="inline-block px-2 py-0.5 rounded-full text-[9px] font-bold bg-emerald-100 text-emerald-800 mt-0.5">
-                      {c.aadhaarStatus}
-                    </span>
-                  </td>
-                  <td className="p-3.5 text-slate-700">
-                    <div className="font-medium">{c.occupation}</div>
-                    <div className="text-[10px] text-emerald-800 font-bold">
-                      {formatCurrency(c.annualIncome, true)}/yr
-                    </div>
-                  </td>
-                  <td className="p-3.5 text-slate-600 font-medium">
-                    {c.assignedAgentName || 'Unassigned'}
-                  </td>
-                  <td className="p-3.5 text-right" onClick={(e) => e.stopPropagation()}>
-                    <div className="flex items-center justify-end gap-1">
-                      <a
-                        href={`tel:${c.phone}`}
-                        className="p-1.5 rounded-lg text-slate-500 hover:text-emerald-800 hover:bg-emerald-50"
-                        title="Direct Call"
-                      >
-                        <Phone className="w-3.5 h-3.5" />
-                      </a>
-                      <a
-                        href={createWhatsAppLink(
-                          c.phone,
-                          `Hello ${c.name}, this is SSP Properties & Loans regarding your account (${c.customerId}).`
-                        )}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="p-1.5 rounded-lg text-emerald-700 hover:bg-emerald-50"
-                        title="WhatsApp Customer"
-                      >
-                        <MessageCircle className="w-3.5 h-3.5" />
-                      </a>
-                      <button
-                        onClick={() => handleOpenCustomer(c.customerId)}
-                        className="px-2 py-1 text-xs font-bold text-emerald-800 hover:bg-emerald-50 rounded-lg ml-1"
-                      >
-                        360° Profile
-                      </button>
-                    </div>
+              {loading ? (
+                <tr>
+                  <td colSpan={6} className="text-center py-12 text-slate-400">
+                    Loading borrowers...
                   </td>
                 </tr>
-              ))}
+              ) : filteredCustomers.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="text-center py-12 text-slate-400">
+                    No borrowers found matching &quot;{search}&quot;
+                  </td>
+                </tr>
+              ) : (
+                filteredCustomers.map((c) => (
+                  <tr key={c.id} className="hover:bg-slate-50/80 transition-colors">
+                    <td className="py-3 px-4">
+                      <div className="font-bold text-slate-900">{c.name}</div>
+                      <div className="font-mono text-[11px] text-emerald-800 font-semibold">{c.customerId}</div>
+                    </td>
+                    <td className="py-3 px-4">
+                      <div className="text-slate-900 font-medium">{c.phone}</div>
+                      <div className="text-slate-400 text-[11px] truncate max-w-[150px]">{c.email}</div>
+                    </td>
+                    <td className="py-3 px-4 text-slate-600">
+                      <div>{c.city}</div>
+                      <div className="text-slate-400 text-[11px]">{c.state}</div>
+                    </td>
+                    <td className="py-3 px-4">
+                      <div className="font-mono text-slate-800">{c.pan}</div>
+                      <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-700">
+                        <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                        {c.aadhaarStatus}
+                      </span>
+                    </td>
+                    <td className="py-3 px-4">
+                      <div className="text-slate-700 font-medium">{c.occupation}</div>
+                      <div className="text-slate-400 text-[11px]">
+                        Income: {formatCurrency(c.annualIncome)}/yr
+                      </div>
+                    </td>
+                    <td className="py-3 px-4 text-right">
+                      <div className="flex items-center justify-end gap-1">
+                        <a
+                          href={`tel:${c.phone}`}
+                          className="p-1.5 rounded-lg text-slate-500 hover:text-emerald-800 hover:bg-emerald-50"
+                          title="Direct Call"
+                        >
+                          <Phone className="w-3.5 h-3.5" />
+                        </a>
+                        <a
+                          href={createWhatsAppLink(
+                            c.phone,
+                            `Hello ${c.name}, this is SSP Vehicle Repo & Recovery regarding your account (${c.customerId}).`
+                          )}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-1.5 rounded-lg text-emerald-700 hover:bg-emerald-50"
+                          title="WhatsApp Customer"
+                        >
+                          <MessageCircle className="w-3.5 h-3.5" />
+                        </a>
+                        <button
+                          onClick={() => handleOpenCustomer(c.customerId)}
+                          className="px-2 py-1 text-xs font-bold text-emerald-800 hover:bg-emerald-50 rounded-lg ml-1"
+                        >
+                          360° Profile
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
@@ -276,7 +280,7 @@ export default function CustomersPage() {
                 <a
                   href={createWhatsAppLink(
                     selectedCustomer.phone,
-                    `Hello ${selectedCustomer.name}, this is SSP Properties & Loans contacting you regarding your portfolio.`
+                    `Hello ${selectedCustomer.name}, this is SSP Vehicle Repo & Recovery contacting you regarding your vehicle account (${selectedCustomer.customerId}).`
                   )}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -313,75 +317,52 @@ export default function CustomersPage() {
                 </div>
               </div>
 
-              {/* Linked Loans */}
+              {/* Linked Vehicles & Repo Cases */}
               <div>
-                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2 flex items-center gap-2">
-                  <Landmark className="w-4 h-4 text-emerald-700" />
-                  <span>Linked Active Loans ({selectedCustomer.loans?.length || 0})</span>
-                </h4>
-                {(selectedCustomer.loans || []).length === 0 ? (
-                  <div className="p-4 bg-slate-50 rounded-xl text-xs text-slate-400">No active loans linked to customer.</div>
-                ) : (
-                  <div className="space-y-2">
-                    {selectedCustomer.loans.map((l: any) => (
-                      <div key={l.id} className="p-3 bg-white border border-slate-200 rounded-xl flex items-center justify-between text-xs">
-                        <div>
-                          <div className="font-bold text-slate-900 font-mono">{l.loanId} — {l.loanType}</div>
-                          <div className="text-slate-500 text-[11px]">EMI: {formatCurrency(l.emiAmount)} • Due: {l.nextDueDate}</div>
-                        </div>
-                        <div className="text-right">
-                          <div className="font-black text-rose-900">{formatCurrency(l.outstandingAmount)}</div>
-                          <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-emerald-100 text-emerald-800">{l.status}</span>
-                        </div>
-                      </div>
-                    ))}
+                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Truck className="w-4 h-4 text-emerald-700" />
+                    <span>Linked Vehicles & Repo Cases ({selectedCustomer.vehicles?.length || 0})</span>
                   </div>
-                )}
-              </div>
-
-              {/* Linked Properties */}
-              <div>
-                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2 flex items-center gap-2">
-                  <Building className="w-4 h-4 text-emerald-700" />
-                  <span>Linked Properties ({selectedCustomer.properties?.length || 0})</span>
-                </h4>
-                {(selectedCustomer.properties || []).length === 0 ? (
-                  <div className="p-4 bg-slate-50 rounded-xl text-xs text-slate-400">No properties registered under this customer.</div>
-                ) : (
-                  <div className="space-y-2">
-                    {selectedCustomer.properties.map((p: any) => (
-                      <div key={p.id} className="p-3 bg-white border border-slate-200 rounded-xl flex items-center justify-between text-xs">
-                        <div>
-                          <div className="font-bold text-slate-900">{p.title}</div>
-                          <div className="text-slate-500 text-[11px]">{p.propertyType} • {p.city} • {p.area} {p.areaUnit}</div>
-                        </div>
-                        <div className="text-right font-black text-emerald-950">
-                          {formatCurrency(p.price)}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {/* Linked Vehicles */}
-              <div>
-                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2 flex items-center gap-2">
-                  <Truck className="w-4 h-4 text-emerald-700" />
-                  <span>Linked Vehicles & Assets ({selectedCustomer.vehicles?.length || 0})</span>
+                  <span className="text-[10px] text-slate-400 font-normal">Active repossession & yard records</span>
                 </h4>
                 {(selectedCustomer.vehicles || []).length === 0 ? (
-                  <div className="p-4 bg-slate-50 rounded-xl text-xs text-slate-400">No vehicles or repo records linked.</div>
+                  <div className="p-6 bg-slate-50 rounded-2xl text-center border border-dashed border-slate-200 text-xs text-slate-400">
+                    No vehicles or repossession records linked to this borrower account.
+                  </div>
                 ) : (
-                  <div className="space-y-2">
+                  <div className="space-y-3">
                     {selectedCustomer.vehicles.map((v: any) => (
-                      <div key={v.id} className="p-3 bg-white border border-slate-200 rounded-xl flex items-center justify-between text-xs">
+                      <div key={v.id} className="p-4 bg-white border border-slate-200/90 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs shadow-2xs hover:border-slate-300 transition-colors">
                         <div>
-                          <div className="font-mono font-bold text-slate-900">{v.regNumber} ({v.make} {v.model})</div>
-                          <div className="text-slate-500 text-[11px]">Location: {v.location}</div>
+                          <div className="flex items-center gap-2">
+                            <span className="font-mono font-bold text-sm text-slate-900">{v.regNumber}</span>
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700">
+                              {v.vehicleType}
+                            </span>
+                          </div>
+                          <div className="text-slate-600 font-medium text-xs mt-1">
+                            {v.make} {v.model} ({v.year || 2022}) • Color: {v.color || 'Standard'}
+                          </div>
+                          <div className="text-slate-400 text-[11px] font-mono mt-0.5">
+                            Chassis: {v.chassisNumber} • Engine: {v.engineNumber || 'N/A'}
+                          </div>
+                          <div className="text-slate-500 text-[11px] mt-1">
+                            📍 Current Location: <span className="font-medium text-slate-700">{v.location}</span>
+                          </div>
                         </div>
-                        <div className="text-right">
-                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">{v.repoStatus}</span>
+                        <div className="flex sm:flex-col items-end justify-between sm:justify-center gap-2">
+                          <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold ${
+                            v.repoStatus === 'In Yard' ? 'bg-rose-100 text-rose-800' :
+                            v.repoStatus === 'Vehicle Located' ? 'bg-purple-100 text-purple-800' :
+                            v.repoStatus === 'Released' || v.repoStatus === 'Completed' ? 'bg-emerald-100 text-emerald-800' :
+                            'bg-amber-100 text-amber-800'
+                          }`}>
+                            {v.repoStatus}
+                          </span>
+                          <span className="text-[11px] font-semibold text-rose-600">
+                            {v.overdueDays ? `${v.overdueDays}d Overdue` : 'Assigned Case'}
+                          </span>
                         </div>
                       </div>
                     ))}

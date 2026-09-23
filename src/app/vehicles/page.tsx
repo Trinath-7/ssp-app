@@ -29,7 +29,6 @@ import {
   ArrowRight,
   User,
   ShieldCheck,
-  Landmark,
 } from 'lucide-react';
 import * as XLSX from 'xlsx';
 
@@ -589,37 +588,11 @@ export default function VehiclesPage() {
                 </div>
               </div>
 
-              {/* SECTION 3: FINANCE DETAILS */}
-              <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 space-y-3">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-900 flex items-center gap-2">
-                  <Landmark className="w-4 h-4 text-emerald-700" />
-                  <span>3. Finance Details</span>
-                </h4>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
-                  <div>
-                    <span className="text-slate-400 text-[10px] uppercase font-semibold">Finance Company</span>
-                    <div className="font-bold text-slate-900 mt-0.5">{selectedVehicle.financeCompany}</div>
-                  </div>
-                  <div>
-                    <span className="text-slate-400 text-[10px] uppercase font-semibold">Linked Loan ID</span>
-                    <div className="font-mono font-bold text-emerald-800 mt-0.5">{selectedVehicle.loanId || 'Asset Lien'}</div>
-                  </div>
-                  <div>
-                    <span className="text-slate-400 text-[10px] uppercase font-semibold">Overdue Balance</span>
-                    <div className="font-black text-rose-900 mt-0.5">{formatCurrency(selectedVehicle.overdueAmount)}</div>
-                  </div>
-                  <div>
-                    <span className="text-slate-400 text-[10px] uppercase font-semibold">Overdue Days</span>
-                    <div className="font-bold text-rose-800 mt-0.5">{selectedVehicle.overdueDays} Days</div>
-                  </div>
-                </div>
-              </div>
-
-              {/* SECTION 4: REPO INFORMATION */}
+              {/* SECTION 3: REPO INFORMATION */}
               <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 space-y-3">
                 <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-900 flex items-center gap-2">
                   <ShieldAlert className="w-4 h-4 text-emerald-700" />
-                  <span>4. Repo Information & Location</span>
+                  <span>3. Repo Information & Location</span>
                 </h4>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
                   <div>
@@ -637,11 +610,11 @@ export default function VehiclesPage() {
                 </div>
               </div>
 
-              {/* SECTION 5: CONFIRMER DETAILS */}
+              {/* SECTION 4: CONFIRMER DETAILS */}
               <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 space-y-3">
                 <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-900 flex items-center gap-2">
                   <ShieldCheck className="w-4 h-4 text-emerald-700" />
-                  <span>5. Confirmer Details</span>
+                  <span>4. Confirmer Details</span>
                 </h4>
                 <div className="grid grid-cols-2 gap-3 text-xs">
                   <div>
@@ -655,11 +628,11 @@ export default function VehiclesPage() {
                 </div>
               </div>
 
-              {/* SECTION 6: AGENCY DETAILS */}
+              {/* SECTION 5: AGENCY DETAILS */}
               <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 space-y-3">
                 <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-900 flex items-center gap-2">
                   <Building className="w-4 h-4 text-emerald-700" />
-                  <span>6. Recovery Agency Details</span>
+                  <span>5. Recovery Agency Details</span>
                 </h4>
                 <div className="grid grid-cols-2 gap-3 text-xs">
                   <div>

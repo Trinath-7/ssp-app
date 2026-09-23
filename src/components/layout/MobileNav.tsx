@@ -5,16 +5,10 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   Home,
-  Building,
-  Landmark,
   Truck,
   Menu,
   Plus,
   X,
-  CreditCard,
-  Users,
-  UserCheck,
-  FileText,
   BarChart3,
   Settings,
   ArrowRight,
@@ -29,18 +23,12 @@ export const MobileNav: React.FC = () => {
 
   const mainTabs = [
     { label: 'Home', href: '/', icon: Home },
-    { label: 'Properties', href: '/properties', icon: Building },
-    { label: 'Loans', href: '/loans', icon: Landmark },
     { label: 'Vehicles', href: '/vehicles', icon: Truck },
   ];
 
   const moreItems = [
-    { label: 'Customers', href: '/customers', icon: Users, desc: 'KYC & borrower profiles' },
-    { label: 'Payments', href: '/payments', icon: CreditCard, desc: 'Collections & receipts' },
-    { label: 'Agents', href: '/agents', icon: UserCheck, desc: 'Field teams & case counts' },
-    { label: 'Documents', href: '/documents', icon: FileText, desc: 'KYC, agreements & RC docs' },
-    { label: 'Reports & Analytics', href: '/reports', icon: BarChart3, desc: 'Export PDF, Excel, CSV' },
-    { label: 'Settings', href: '/settings', icon: Settings, desc: 'Business profile & rules' },
+    { label: 'Reports & Analytics', href: '/reports', icon: BarChart3, desc: 'Export vehicle fleet & repo data' },
+    { label: 'Settings', href: '/settings', icon: Settings, desc: 'Agency profile & system rules' },
   ];
 
   const handleFabAction = (action: string) => {
@@ -65,46 +53,11 @@ export const MobileNav: React.FC = () => {
             Quick Actions
           </div>
           <button
-            onClick={() => handleFabAction('payment')}
-            className="w-full flex items-center gap-2.5 p-2.5 rounded-xl hover:bg-emerald-50 text-left text-xs font-semibold text-slate-800 transition-colors"
-          >
-            <CreditCard className="w-4 h-4 text-emerald-600" />
-            <span>Record Payment</span>
-          </button>
-          <button
-            onClick={() => handleFabAction('loan')}
-            className="w-full flex items-center gap-2.5 p-2.5 rounded-xl hover:bg-emerald-50 text-left text-xs font-semibold text-slate-800 transition-colors"
-          >
-            <Landmark className="w-4 h-4 text-emerald-600" />
-            <span>Create New Loan</span>
-          </button>
-          <button
-            onClick={() => handleFabAction('property')}
-            className="w-full flex items-center gap-2.5 p-2.5 rounded-xl hover:bg-emerald-50 text-left text-xs font-semibold text-slate-800 transition-colors"
-          >
-            <Building className="w-4 h-4 text-emerald-600" />
-            <span>+ Add Property</span>
-          </button>
-          <button
             onClick={() => handleFabAction('vehicle')}
             className="w-full flex items-center gap-2.5 p-2.5 rounded-xl hover:bg-emerald-50 text-left text-xs font-semibold text-slate-800 transition-colors"
           >
             <Truck className="w-4 h-4 text-emerald-600" />
             <span>Register Vehicle</span>
-          </button>
-          <button
-            onClick={() => handleFabAction('customer')}
-            className="w-full flex items-center gap-2.5 p-2.5 rounded-xl hover:bg-emerald-50 text-left text-xs font-semibold text-slate-800 transition-colors"
-          >
-            <Users className="w-4 h-4 text-emerald-600" />
-            <span>Add Customer</span>
-          </button>
-          <button
-            onClick={() => handleFabAction('document')}
-            className="w-full flex items-center gap-2.5 p-2.5 rounded-xl hover:bg-emerald-50 text-left text-xs font-semibold text-slate-800 transition-colors"
-          >
-            <FileText className="w-4 h-4 text-emerald-600" />
-            <span>Upload Document</span>
           </button>
         </div>
       )}
@@ -163,7 +116,7 @@ export const MobileNav: React.FC = () => {
       )}
 
       {/* Mobile Bottom Navigation Bar */}
-      <nav className="fixed bottom-0 left-0 right-0 z-40 h-16 bg-white/95 backdrop-blur-md border-t border-slate-200 px-3 flex items-center justify-around shadow-lg lg:hidden">
+      <nav className="fixed bottom-0 left-0 right-0 z-40 h-16 bg-white/90 backdrop-blur-md border-t border-emerald-100 px-3 flex items-center justify-around shadow-[0_-10px_25px_rgba(15,23,42,0.06)] lg:hidden">
         {mainTabs.map((tab) => {
           const Icon = tab.icon;
           const isActive =

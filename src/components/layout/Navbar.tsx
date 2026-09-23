@@ -85,15 +85,17 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar }) => {
       <div className="hidden md:flex flex-1 max-w-md mx-6">
         <button
           onClick={() => setIsSearchOpen(true)}
-          className="w-full flex items-center justify-between px-3.5 py-2 text-sm text-slate-500 bg-slate-100/90 hover:bg-slate-200/70 border border-slate-200 rounded-xl transition-all shadow-xs group"
+          className="w-full flex items-center justify-between px-3.5 py-2.5 text-sm text-slate-600 bg-white/90 hover:bg-white border border-emerald-100 rounded-xl transition-all shadow-[0_8px_20px_rgba(16,185,129,0.08)] group backdrop-blur-sm"
         >
           <div className="flex items-center gap-2.5">
-            <Search className="w-4 h-4 text-emerald-600 group-hover:text-emerald-700" />
-            <span className="text-slate-500 font-normal">
-              Search vehicles (e.g. KA56), loans, customers...
+            <div className="p-1.5 rounded-lg bg-emerald-100 text-emerald-700">
+              <Search className="w-3.5 h-3.5" />
+            </div>
+            <span className="font-medium text-slate-600">
+              Search vehicles, chassis, repo cases...
             </span>
           </div>
-          <kbd className="hidden sm:inline-flex items-center px-2 py-0.5 text-[11px] font-mono text-slate-500 bg-white border border-slate-300/80 rounded-md shadow-xs">
+          <kbd className="hidden sm:inline-flex items-center px-2 py-0.5 text-[11px] font-mono text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-md shadow-xs">
             Ctrl + K
           </kbd>
         </button>

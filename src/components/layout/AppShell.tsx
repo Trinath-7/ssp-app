@@ -15,7 +15,7 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-100/60 text-slate-900 selection:bg-emerald-200">
+    <div className="min-h-screen flex flex-col text-slate-900 selection:bg-emerald-200">
       {/* Top Navbar */}
       <Navbar onToggleSidebar={() => setIsSidebarOpen((prev) => !prev)} />
 

@@ -1120,18 +1120,11 @@ export const db = {
     const data = ensureDbInitialized();
 
     const totalCustomers = data.customers.length;
-    const totalProperties = data.properties.length;
-    const availableProperties = data.properties.filter((p) => p.status === 'Available').length;
-    const soldProperties = data.properties.filter((p) => p.status === 'Sold').length;
-
-    const activeLoans = data.loans.filter((l) => l.status === 'Active' || l.status === 'Overdue');
-    const totalLoanValue = data.loans.reduce((sum, l) => sum + l.principalAmount, 0);
-    const outstandingAmount = data.loans.reduce((sum, l) => sum + l.outstandingAmount, 0);
-    const totalCollected = data.loans.reduce((sum, l) => sum + l.paidAmount, 0);
-
-    // Monthly Collection (August + September payments)
-    const currentMonthPayments = data.payments.filter((p) => p.status === 'Success');
-    const monthlyCollection = currentMonthPayments.reduce((sum, p) => sum + p.amount, 0);
+    const totalAgents = data.agents.length;
+    const totalVehicles = data.vehicles.length;
+    const vehiclesLocated = data.vehicles.filter((v) => v.repoStatus === 'Vehicle Located').length;
+    const vehiclesInYard = data.vehicles.filter((v) => v.repoStatus === 'In Yard').length;
+    const vehiclesRecovered = data.vehicles.filter((v) => v.repoStatus === 'Released' || v.repoStatus === 'Completed').length;
 
     const activeRepoCases = data.vehicles.filter(
       (v) =>
@@ -1142,15 +1135,7 @@ export const db = {
         v.repoStatus === 'Verification'
     ).length;
 
-    // Monthly Collections Chart Data
-    const monthlyCollectionsChart = [
-      { month: 'Apr 2024', collections: 1850000, disbursements: 4500000 },
-      { month: 'May 2024', collections: 2420000, disbursements: 6200000 },
-      { month: 'Jun 2024', collections: 3100000, disbursements: 5800000 },
-      { month: 'Jul 2024', collections: 3890000, disbursements: 7400000 },
-      { month: 'Aug 2024', collections: 4650000, disbursements: 8900000 },
-      { month: 'Sep 2024', collections: monthlyCollection > 0 ? monthlyCollection : 5120000, disbursements: 9500000 },
-    ];
+    const highPriorityOverdue = data.vehicles.filter((v) => (v.overdueDays || 0) > 90 || v.repoStatus === 'In Yard').length;
 
     // Repo Status Breakdown
     const repoStatusBreakdown = [
@@ -1165,49 +1150,34 @@ export const db = {
       { status: 'Completed', count: data.vehicles.filter((v) => v.repoStatus === 'Completed').length, color: '#059669' },
     ];
 
-    // Property Types breakdown
-    const propertyTypeCounts = data.properties.reduce((acc, p) => {
-      acc[p.propertyType] = (acc[p.propertyType] || 0) + 1;
+    // Vehicle Type distribution
+    const vehicleTypeCounts = data.vehicles.reduce((acc, v) => {
+      acc[v.vehicleType] = (acc[v.vehicleType] || 0) + 1;
       return acc;
     }, {} as Record<string, number>);
 
-    const propertyDistribution = Object.entries(propertyTypeCounts).map(([type, count]) => ({
+    const vehicleTypeDistribution = Object.entries(vehicleTypeCounts).map(([type, count]) => ({
       name: type,
       value: count,
     }));
 
-    // Loan Types breakdown
-    const loanTypeCounts = data.loans.reduce((acc, l) => {
-      acc[l.loanType] = (acc[l.loanType] || 0) + l.principalAmount;
-      return acc;
-    }, {} as Record<string, number>);
-
-    const loanDistribution = Object.entries(loanTypeCounts).map(([name, amount]) => ({
-      name,
-      amount,
-    }));
-
     return {
       totalCustomers,
-      totalProperties,
-      availableProperties,
-      soldProperties,
-      activeLoansCount: activeLoans.length,
-      totalLoanValue,
-      outstandingAmount,
-      totalCollected,
-      monthlyCollection,
+      totalAgents,
+      totalVehicles,
+      vehiclesLocated,
+      vehiclesInYard,
+      vehiclesRecovered,
       activeRepoCases,
-      monthlyCollectionsChart,
+      highPriorityOverdue,
       repoStatusBreakdown,
-      propertyDistribution,
-      loanDistribution,
+      vehicleTypeDistribution,
     };
   },
 
   // GLOBAL DYNAMIC SEARCH
   globalSearch: (query: string) => {
-    if (!query || query.trim().length < 2) return { customers: [], properties: [], loans: [], vehicles: [], documents: [] };
+    if (!query || query.trim().length < 2) return { customers: [], agents: [], properties: [], loans: [], vehicles: [], documents: [] };
     const q = query.trim().toLowerCase();
     const data = ensureDbInitialized();
 
@@ -1215,13 +1185,12 @@ export const db = {
       .filter((c) => c.name.toLowerCase().includes(q) || c.phone.includes(q) || c.customerId.toLowerCase().includes(q))
       .slice(0, 5);
 
-    const properties = data.properties
-      .filter((p) => p.title.toLowerCase().includes(q) || p.city.toLowerCase().includes(q) || p.propertyId.toLowerCase().includes(q))
+    const agents = data.agents
+      .filter((a) => a.name.toLowerCase().includes(q) || a.phone.includes(q) || a.city.toLowerCase().includes(q) || a.agentId.toLowerCase().includes(q))
       .slice(0, 5);
 
-    const loans = data.loans
-      .filter((l) => l.loanId.toLowerCase().includes(q) || l.customerName.toLowerCase().includes(q) || l.loanType.toLowerCase().includes(q))
-      .slice(0, 5);
+    const properties: any[] = [];
+    const loans: any[] = [];
 
     const vehicles = data.vehicles
       .filter(
@@ -1238,6 +1207,6 @@ export const db = {
       .filter((d) => d.name.toLowerCase().includes(q) || d.category.toLowerCase().includes(q))
       .slice(0, 5);
 
-    return { customers, properties, loans, vehicles, documents };
+    return { customers, agents, properties, loans, vehicles, documents };
   },
 };

@@ -28,12 +28,11 @@ export default function DocumentsPage() {
 
   const categories = [
     'All',
-    'KYC',
-    'Property Documents',
-    'Loan Documents',
     'Vehicle Documents',
+    'Seizure Memos',
+    'Yard Intake Receipts',
+    'KYC',
     'Agreements',
-    'Payment Receipts',
     'Reports',
   ];
 
@@ -109,7 +108,7 @@ export default function DocumentsPage() {
             <span>Document Repository & Records</span>
           </h1>
           <p className="text-sm font-medium text-slate-500 mt-0.5">
-            Encrypted storage for KYC, property deeds, hypothecation agreements, and RC copies
+            Encrypted storage for Seizure Memos, Yard Gate Passes, Form 29/30 RTO docs, Borrower KYC, and RC smart cards
           </p>
         </div>
 

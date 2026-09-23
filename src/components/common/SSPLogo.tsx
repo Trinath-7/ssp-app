@@ -77,7 +77,7 @@ export const SSPLogo: React.FC<SSPLogoProps> = ({
               light ? 'text-emerald-300/80' : 'text-emerald-800'
             }`}
           >
-            PROPERTIES & LOANS
+            VEHICLE REPO & RECOVERY
           </span>
         </div>
       )}

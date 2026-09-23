@@ -10,50 +10,39 @@ import {
   FileDown,
   Calendar,
   Filter,
-  Landmark,
-  CreditCard,
-  Building,
   Truck,
   Users,
   UserCheck,
   CheckCircle2,
   Clock,
   Printer,
+  ShieldCheck,
+  AlertTriangle,
 } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
 
 export default function ReportsPage() {
   const { showToast } = useApp();
-  const [reportType, setReportType] = useState('Loan Report');
+  const [reportType, setReportType] = useState('Vehicle Fleet Report');
   const [dateRange, setDateRange] = useState('This Month');
   const [loading, setLoading] = useState(true);
 
   const [reportData, setReportData] = useState<{
-    loans: any[];
-    payments: any[];
-    properties: any[];
     vehicles: any[];
     agents: any[];
     customers: any[];
   }>({
-    loans: [],
-    payments: [],
-    properties: [],
     vehicles: [],
     agents: [],
     customers: [],
   });
 
   const reportOptions = [
-    { name: 'Loan Report', icon: Landmark, desc: 'Sanctions, tenures, rates & statuses' },
-    { name: 'Payment Report', icon: CreditCard, desc: 'Collections, transaction IDs & methods' },
-    { name: 'Outstanding Report', icon: Clock, desc: 'Overdue loans, defaulters & balances' },
-    { name: 'Property Report', icon: Building, desc: 'Inventory, valuations & occupancy' },
-    { name: 'Vehicle Report', icon: Truck, desc: 'Fleet records, chassis, engine & types' },
-    { name: 'Repo Report', icon: Truck, desc: 'Repo stages, yard admissions & intimations' },
-    { name: 'Agent Performance', icon: UserCheck, desc: 'Resolved cases, ratings & case loads' },
-    { name: 'Customer Report', icon: Users, desc: 'KYC statuses, incomes & contact records' },
+    { name: 'Vehicle Fleet Report', icon: Truck, desc: 'Fleet records, chassis, engine & vehicle classes' },
+    { name: 'Repossession Stages Report', icon: Clock, desc: 'Repo stages, yard admissions & overdue tracking' },
+    { name: 'Agent Performance Report', icon: UserCheck, desc: 'Resolved cases, success rates & active loads' },
+    { name: 'Borrower & KYC Report', icon: Users, desc: 'Borrower accounts, KYC statuses & contact records' },
   ];
 
   const dateRanges = ['Today', '7 Days', 'This Month', '3 Months', '6 Months', 'This Year', 'All Time'];
@@ -61,19 +50,13 @@ export default function ReportsPage() {
   const fetchAllData = async () => {
     setLoading(true);
     try {
-      const [lRes, pRes, prRes, vRes, aRes, cRes] = await Promise.all([
-        fetch('/api/loans'),
-        fetch('/api/payments'),
-        fetch('/api/properties'),
+      const [vRes, aRes, cRes] = await Promise.all([
         fetch('/api/vehicles'),
         fetch('/api/agents'),
         fetch('/api/customers'),
       ]);
 
       setReportData({
-        loans: lRes.ok ? await lRes.json() : [],
-        payments: pRes.ok ? await pRes.json() : [],
-        properties: prRes.ok ? await prRes.json() : [],
         vehicles: vRes.ok ? await vRes.json() : [],
         agents: aRes.ok ? await aRes.json() : [],
         customers: cRes.ok ? await cRes.json() : [],
@@ -93,74 +76,30 @@ export default function ReportsPage() {
   // Format active dataset for export
   const getExportData = () => {
     switch (reportType) {
-      case 'Loan Report':
-        return reportData.loans.map((l) => ({
-          'Loan ID': l.loanId,
-          Customer: l.customerName,
-          Type: l.loanType,
-          Principal: l.principalAmount,
-          'Interest Rate (%)': l.interestRate,
-          Tenure: `${l.tenureMonths} Mos`,
-          EMI: l.emiAmount,
-          Paid: l.paidAmount,
-          Outstanding: l.outstandingAmount,
-          Status: l.status,
-        }));
-      case 'Payment Report':
-        return reportData.payments.map((p) => ({
-          'Receipt #': p.receiptNumber,
-          Customer: p.customerName,
-          'Loan ID': p.loanId,
-          Amount: p.amount,
-          Date: p.paymentDate,
-          Method: p.paymentMethod,
-          'Tx ID': p.transactionId,
-          Collector: p.collectedBy,
-        }));
-      case 'Outstanding Report':
-        return reportData.loans
-          .filter((l) => l.outstandingAmount > 0)
-          .map((l) => ({
-            'Loan ID': l.loanId,
-            Customer: l.customerName,
-            Type: l.loanType,
-            Outstanding: l.outstandingAmount,
-            MonthlyEMI: l.emiAmount,
-            NextDueDate: l.nextDueDate,
-            Status: l.status,
-          }));
-      case 'Property Report':
-        return reportData.properties.map((p) => ({
-          'Property ID': p.propertyId,
-          Title: p.title,
-          Type: p.propertyType,
-          Location: p.location,
-          City: p.city,
-          Price: p.price,
-          Area: `${p.area} ${p.areaUnit}`,
-          Status: p.status,
-        }));
-      case 'Vehicle Report':
+      case 'Vehicle Fleet Report':
         return reportData.vehicles.map((v) => ({
           'Vehicle ID': v.vehicleId,
           'Reg Plate': v.regNumber,
           Make: v.make,
           Model: v.model,
           Type: v.vehicleType,
+          Chassis: v.chassisNumber,
           Owner: v.ownerName,
+          Location: v.location,
           Status: v.repoStatus,
         }));
-      case 'Repo Report':
+      case 'Repossession Stages Report':
         return reportData.vehicles.map((v) => ({
           'Reg Plate': v.regNumber,
-          Model: `${v.make} ${v.model}`,
+          Vehicle: `${v.make} ${v.model}`,
           'Repo Status': v.repoStatus,
           'Overdue Days': v.overdueDays,
           'Overdue Amount': v.overdueAmount,
-          'Yard Location': v.yardLocation || 'N/A',
+          'Current Location': v.location,
+          'Yard Custody': v.repoStatus === 'In Yard' ? 'Yes - Impounded' : 'No',
           Agent: v.assignedAgentName || 'Unassigned',
         }));
-      case 'Agent Performance':
+      case 'Agent Performance Report':
         return reportData.agents.map((a) => ({
           'Agent ID': a.agentId,
           Name: a.name,
@@ -168,17 +107,20 @@ export default function ReportsPage() {
           Phone: a.phone,
           'Assigned Cases': a.assignedCasesCount,
           'Completed Cases': a.completedCasesCount,
+          'Success Rate': `${a.successRate}%`,
           Rating: a.rating,
+          Status: a.status,
         }));
-      case 'Customer Report':
+      case 'Borrower & KYC Report':
         return reportData.customers.map((c) => ({
-          'Customer ID': c.customerId,
+          'Borrower ID': c.customerId,
           Name: c.name,
           Phone: c.phone,
           City: c.city,
           PAN: c.pan,
           'Aadhaar Status': c.aadhaarStatus,
-          Income: c.annualIncome,
+          Occupation: c.occupation,
+          'Annual Income': c.annualIncome,
         }));
       default:
         return [];
@@ -207,11 +149,11 @@ export default function ReportsPage() {
     const doc = new jsPDF();
     doc.setFontSize(18);
     doc.setTextColor(15, 81, 71);
-    doc.text('SSP PROPERTIES & LOANS', 20, 20);
+    doc.text('SSP VEHICLE REPO & RECOVERY', 20, 20);
 
     doc.setFontSize(11);
     doc.setTextColor(50);
-    doc.text(`Official Executive Report: ${reportType}`, 20, 28);
+    doc.text(`Official Repossession Operations Report: ${reportType}`, 20, 28);
     doc.setFontSize(9);
     doc.text(`Date Range Filter: ${dateRange} • Generated: ${new Date().toLocaleString()}`, 20, 34);
     doc.line(20, 38, 190, 38);
@@ -236,7 +178,7 @@ export default function ReportsPage() {
 
     doc.setFontSize(8);
     doc.setTextColor(140);
-    doc.text('Confidential commercial operating report • SSP Properties & Loans Systems', 20, 285);
+    doc.text('Confidential vehicle repossession report • SSP Vehicle Repo & Recovery Systems', 20, 285);
 
     doc.save(`SSP_${reportType.replace(/\s+/g, '_')}.pdf`);
     showToast(`PDF generated for ${reportType}`);

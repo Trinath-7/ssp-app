@@ -5,19 +5,10 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard,
-  Building,
-  Landmark,
   Truck,
-  Users,
-  CreditCard,
-  UserCheck,
-  FileText,
   BarChart3,
   Settings,
-  HelpCircle,
-  PhoneCall,
   PlusCircle,
-  Calculator,
 } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 
@@ -32,13 +23,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 
   const navItems = [
     { label: 'Dashboard', href: '/', icon: LayoutDashboard },
-    { label: 'Properties', href: '/properties', icon: Building, badge: '15' },
-    { label: 'Loans & EMI', href: '/loans', icon: Landmark, badge: '20' },
     { label: 'Vehicles & Repo', href: '/vehicles', icon: Truck, badge: '15' },
-    { label: 'Customers', href: '/customers', icon: Users, badge: '20' },
-    { label: 'Payments', href: '/payments', icon: CreditCard },
-    { label: 'Agents', href: '/agents', icon: UserCheck, badge: '8' },
-    { label: 'Documents', href: '/documents', icon: FileText },
     { label: 'Reports & Analytics', href: '/reports', icon: BarChart3 },
     { label: 'Settings', href: '/settings', icon: Settings },
   ];
@@ -54,7 +39,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       )}
 
       <aside
-        className={`fixed lg:sticky top-16 left-0 z-40 w-64 h-[calc(100vh-4rem)] bg-white border-r border-slate-200/80 flex flex-col justify-between overflow-y-auto transition-transform duration-200 ease-in-out ${
+        className={`fixed lg:sticky top-16 left-0 z-40 w-64 h-[calc(100vh-4rem)] bg-white/85 backdrop-blur-sm border-r border-emerald-100/80 shadow-[8px_0_30px_rgba(15,23,42,0.04)] flex flex-col justify-between overflow-y-auto transition-transform duration-200 ease-in-out ${
           isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         }`}
       >
@@ -62,11 +47,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           {/* Quick Create CTA Button */}
           <div>
             <button
-              onClick={() => openQuickAction('loan')}
+              onClick={() => openQuickAction('vehicle')}
               className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-gradient-to-r from-emerald-800 to-teal-800 hover:from-emerald-900 hover:to-teal-900 text-white font-semibold text-sm shadow-md shadow-emerald-900/10 hover:shadow-lg transition-all"
             >
               <PlusCircle className="w-4 h-4 text-emerald-300" />
-              <span>New Loan / Entry</span>
+              <span>+ Register Vehicle</span>
             </button>
           </div>
 
@@ -89,7 +74,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                   onClick={onClose}
                   className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
                     isActive
-                      ? 'bg-emerald-50 text-emerald-900 border border-emerald-200/80 shadow-xs'
+                      ? 'bg-gradient-to-r from-emerald-50 to-teal-50 text-emerald-900 border border-emerald-200 shadow-[0_8px_20px_rgba(16,185,129,0.12)]'
                       : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                   }`}
                 >
